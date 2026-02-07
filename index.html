@@ -8,7 +8,17 @@
 <body>
 
   <div id="video-wrapper" class="vp-wrapper">
-    <video id="video" src="sample_video.mp4"></video>
+    <video id="video" src="<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Custom Video Player</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div id="video-wrapper" class="vp-wrapper">
+    <video id="video" src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"></video>
   </div>
 
   <script src="script.js"></script>
@@ -25,3 +35,21 @@
 
 </body>
 </html>
+"></video>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    initVideoPlayer({
+      videoElement: "#video",
+      container: "#video-wrapper",
+      defaults: {
+        volume: 0.8,
+        speed: 1
+      }
+    });
+  </script>
+
+</body>
+</html>
+
