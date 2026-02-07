@@ -1,20 +1,18 @@
-function initVideoPlayer(config) {
+function initVideoPlayer(cfg) {
+  const video = document.querySelector(cfg.videoElement);
+  const box = document.querySelector(cfg.container);
 
-  const video = document.querySelector(config.videoElement);
-  const wrapper = document.querySelector(config.container);
-
-  if (!video || !wrapper) {
-    console.error("Video or wrapper not found");
+  if (!video || !box) {
+    console.error("Missing video or container");
     return;
   }
 
   video.controls = false;
 
-  
-  const controls = document.createElement("div");
-  controls.className = "vp-controls";
+  const ui = document.createElement("div");
+  ui.className = "vp-controls";
 
-  controls.innerHTML = `
+  ui.innerHTML = `
     <button class="vp-btn play-btn">
       <svg class="vp-icon play" viewBox="0 0 24 24">
         <polygon points="5,3 19,12 5,21"></polygon>
@@ -54,7 +52,7 @@ function initVideoPlayer(config) {
       <option value="2">2x</option>
     </select>
 
-    <button class="vp-btn fullscreen-btn">
+    <button class="vp-btn fs-btn">
       <svg class="vp-icon" viewBox="0 0 24 24">
         <polyline points="4 9 4 4 9 4"></polyline>
         <polyline points="15 4 20 4 20 9"></polyline>
@@ -64,56 +62,52 @@ function initVideoPlayer(config) {
     </button>
   `;
 
-  wrapper.appendChild(controls);
+  box.appendChild(ui);
 
   video.muted = true;
-  video.volume = config.defaults?.volume || 0.8;
-  video.playbackRate = config.defaults?.speed || 1;
+  video.volume = cfg.defaults?.volume || 0.8;
+  video.playbackRate = cfg.defaults?.speed || 1;
 
-  let lastVolume = video.volume;
-  let hideTimer = null;
+  let lastVol = video.volume;
+  let hideT = null;
 
+  const playBtn = ui.querySelector(".play-btn");
+  const playI = ui.querySelector(".play");
+  const pauseI = ui.querySelector(".pause");
 
-  const playBtn = controls.querySelector(".play-btn");
-  const playIcon = controls.querySelector(".play");
-  const pauseIcon = controls.querySelector(".pause");
+  const bar = ui.querySelector(".progress");
+  const time = ui.querySelector(".time");
 
-  const progress = controls.querySelector(".progress");
-  const time = controls.querySelector(".time");
+  const muteBtn = ui.querySelector(".mute-btn");
+  const volOn = ui.querySelector(".volume-on");
+  const volOff = ui.querySelector(".volume-off");
+  const vol = ui.querySelector(".volume");
 
-  const muteBtn = controls.querySelector(".mute-btn");
-  const volumeOnIcon = controls.querySelector(".volume-on");
-  const volumeOffIcon = controls.querySelector(".volume-off");
-  const volumeSlider = controls.querySelector(".volume");
+  const speed = ui.querySelector(".speed");
+  const fsBtn = ui.querySelector(".fs-btn");
 
-  const speedSelect = controls.querySelector(".speed");
-  const fullscreenBtn = controls.querySelector(".fullscreen-btn");
+  vol.value = video.volume;
+  speed.value = video.playbackRate;
 
-  volumeSlider.value = video.volume;
-  speedSelect.value = video.playbackRate;
-
- 
-  function isFullscreen() {
-    return document.fullscreenElement === wrapper;
+  function isFs() {
+    return document.fullscreenElement === box;
   }
 
-  function showControls() {
-    controls.classList.remove("hide");
+  function showUi() {
+    ui.classList.remove("hide");
 
-    if (isFullscreen()) return;
+    if (isFs()) return;
 
-    clearTimeout(hideTimer);
-    hideTimer = setTimeout(() => {
-      if (!video.paused) {
-        controls.classList.add("hide");
-      }
+    clearTimeout(hideT);
+    hideT = setTimeout(() => {
+      if (!video.paused) ui.classList.add("hide");
     }, 2000);
   }
 
-  function formatTime(seconds) {
-    const min = Math.floor(seconds / 60);
-    const sec = Math.floor(seconds % 60);
-    return `${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+  function fmt(t) {
+    const m = Math.floor(t / 60);
+    const s = Math.floor(t % 60);
+    return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
   }
 
   playBtn.addEventListener("click", () => {
@@ -121,83 +115,76 @@ function initVideoPlayer(config) {
   });
 
   video.addEventListener("play", () => {
-    playIcon.classList.add("hidden");
-    pauseIcon.classList.remove("hidden");
-    showControls();
+    playI.classList.add("hidden");
+    pauseI.classList.remove("hidden");
+    showUi();
   });
 
   video.addEventListener("pause", () => {
-    pauseIcon.classList.add("hidden");
-    playIcon.classList.remove("hidden");
-    controls.classList.remove("hide");
+    pauseI.classList.add("hidden");
+    playI.classList.remove("hidden");
+    ui.classList.remove("hide");
   });
 
   video.addEventListener("dblclick", () => {
     video.paused ? video.play() : video.pause();
   });
 
- 
   video.addEventListener("loadedmetadata", () => {
-    time.textContent = `00:00 / ${formatTime(video.duration)}`;
+    time.textContent = `00:00 / ${fmt(video.duration)}`;
   });
 
   video.addEventListener("timeupdate", () => {
-    progress.value = (video.currentTime / video.duration) * 100;
-    time.textContent =
-      `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+    bar.value = (video.currentTime / video.duration) * 100;
+    time.textContent = `${fmt(video.currentTime)} / ${fmt(video.duration)}`;
   });
 
-  progress.addEventListener("input", () => {
-    video.currentTime = (progress.value / 100) * video.duration;
+  bar.addEventListener("input", () => {
+    video.currentTime = (bar.value / 100) * video.duration;
   });
 
- 
-  volumeSlider.addEventListener("input", () => {
+  vol.addEventListener("input", () => {
     video.muted = false;
-    video.volume = volumeSlider.value;
-    lastVolume = video.volume;
+    video.volume = vol.value;
+    lastVol = video.volume;
 
-    volumeOffIcon.classList.add("hidden");
-    volumeOnIcon.classList.remove("hidden");
+    volOff.classList.add("hidden");
+    volOn.classList.remove("hidden");
   });
 
   muteBtn.addEventListener("click", () => {
     if (video.muted) {
       video.muted = false;
-      video.volume = lastVolume;
-      volumeSlider.value = video.volume;
+      video.volume = lastVol;
+      vol.value = video.volume;
 
-      volumeOffIcon.classList.add("hidden");
-      volumeOnIcon.classList.remove("hidden");
+      volOff.classList.add("hidden");
+      volOn.classList.remove("hidden");
     } else {
       video.muted = true;
 
-      volumeOnIcon.classList.add("hidden");
-      volumeOffIcon.classList.remove("hidden");
+      volOn.classList.add("hidden");
+      volOff.classList.remove("hidden");
     }
   });
 
-
-  speedSelect.addEventListener("change", () => {
-    video.playbackRate = speedSelect.value;
+  speed.addEventListener("change", () => {
+    video.playbackRate = speed.value;
   });
 
- 
-  fullscreenBtn.addEventListener("click", () => {
-    if (!document.fullscreenElement) {
-      wrapper.requestFullscreen({ navigationUI: "hide" });
-    } else {
-      document.exitFullscreen();
-    }
+  fsBtn.addEventListener("click", () => {
+    document.fullscreenElement
+      ? document.exitFullscreen()
+      : box.requestFullscreen({ navigationUI: "hide" });
   });
 
   document.addEventListener("fullscreenchange", () => {
-    controls.classList.remove("hide");
+    ui.classList.remove("hide");
   });
 
-  wrapper.addEventListener("mousemove", showControls);
-  wrapper.addEventListener("click", showControls);
+  box.addEventListener("mousemove", showUi);
+  box.addEventListener("click", showUi);
 }
 
-
 window.initVideoPlayer = initVideoPlayer;
+
