@@ -1,6 +1,6 @@
 .vp-wrapper {
   position: relative;
-  max-width: 720px;
+  max-width: 800px;
   margin: auto;
   background: #000;
   overflow: hidden;
@@ -11,6 +11,7 @@
   display: block;
 }
 
+/* Fullscreen */
 .vp-wrapper:fullscreen {
   position: fixed;
   inset: 0;
@@ -34,6 +35,7 @@
   z-index: 10000;
 }
 
+/* Controls bar */
 .vp-controls {
   position: absolute;
   bottom: 0;
@@ -41,8 +43,8 @@
   padding: 10px;
 
   display: flex;
-  justify-content: space-evenly;
   align-items: center;
+  gap: 10px;
 
   background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
   transition: opacity 0.3s ease;
@@ -53,27 +55,7 @@
   pointer-events: none;
 }
 
-
-.controls-left,
-.controls-center,
-.controls-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.controls-center {
-  flex: 1;
-  justify-content: center;
-}
-
-
-.controls-center .vp-progress {
-  flex: 1;
-  max-width: 420px;
-}
-
-
+/* Buttons */
 .vp-btn {
   background: none;
   border: none;
@@ -92,35 +74,38 @@
   display: none;
 }
 
-
-.vp-progress {
+/* Progress */
+.progress {
+  flex: 1;
   cursor: pointer;
+  max-width: 420px;
 }
 
-.vp-volume {
+/* Volume */
+.volume {
   width: 80px;
 }
 
-.vp-time,
+/* Time */
 .time {
   color: #fff;
   font-size: 13px;
   white-space: nowrap;
 }
 
-.vp-speed {
+/* Speed */
+.speed {
   background: rgba(0,0,0,0.6);
   color: #fff;
   border: 1px solid rgba(255,255,255,0.3);
 }
 
-
+/* Responsive tweaks */
 @media (min-width: 1024px) {
   .vp-controls {
     flex-direction: row;
   }
 }
-
 
 @media (min-width: 768px) and (max-width: 1023px) {
   .vp-icon {
@@ -129,21 +114,16 @@
   }
 }
 
-@media (min-width: 540px) and (max-width: 767px) {
+@media (max-width: 767px) {
   .vp-controls {
     flex-wrap: wrap;
   }
 
-  .controls-center {
-    width: 100%;
-    order: 1;
-  }
-
-  .controls-center .vp-progress {
+  .progress {
     max-width: 100%;
   }
 
-  .vp-time {
+  .time {
     width: 100%;
     text-align: center;
   }
@@ -155,16 +135,9 @@
     gap: 8px;
   }
 
-  .controls-left,
-  .controls-center,
-  .controls-right {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .controls-center .vp-progress,
-  .vp-volume,
-  .vp-speed {
+  .progress,
+  .volume,
+  .speed {
     width: 100%;
   }
 
