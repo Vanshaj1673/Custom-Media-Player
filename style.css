@@ -1,0 +1,174 @@
+.vp-wrapper {
+  position: relative;
+  max-width: 720px;
+  margin: auto;
+  background: #000;
+  overflow: hidden;
+}
+
+.vp-wrapper video {
+  width: 100%;
+  display: block;
+}
+
+.vp-wrapper:fullscreen {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  z-index: 9999;
+}
+
+.vp-wrapper:fullscreen video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.vp-wrapper:fullscreen .vp-controls {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10000;
+}
+
+.vp-controls {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 10px;
+
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+
+  background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+  transition: opacity 0.3s ease;
+}
+
+.vp-controls.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+
+.controls-left,
+.controls-center,
+.controls-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.controls-center {
+  flex: 1;
+  justify-content: center;
+}
+
+
+.controls-center .vp-progress {
+  flex: 1;
+  max-width: 420px;
+}
+
+
+.vp-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.vp-icon {
+  width: 18px;
+  height: 18px;
+  fill: white;
+  stroke: white;
+}
+
+.hidden {
+  display: none;
+}
+
+
+.vp-progress {
+  cursor: pointer;
+}
+
+.vp-volume {
+  width: 80px;
+}
+
+.vp-time,
+.time {
+  color: #fff;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.vp-speed {
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+
+@media (min-width: 1024px) {
+  .vp-controls {
+    flex-direction: row;
+  }
+}
+
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .vp-icon {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (min-width: 540px) and (max-width: 767px) {
+  .vp-controls {
+    flex-wrap: wrap;
+  }
+
+  .controls-center {
+    width: 100%;
+    order: 1;
+  }
+
+  .controls-center .vp-progress {
+    max-width: 100%;
+  }
+
+  .vp-time {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 539px) {
+  .vp-controls {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .controls-left,
+  .controls-center,
+  .controls-right {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .controls-center .vp-progress,
+  .vp-volume,
+  .vp-speed {
+    width: 100%;
+  }
+
+  .vp-btn {
+    padding: 8px;
+  }
+}
